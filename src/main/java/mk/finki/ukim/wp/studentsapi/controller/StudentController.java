@@ -62,7 +62,7 @@ public class StudentController {
         }
 
         int index = Integer.parseInt(s.index);
-        if(index/100000==0) {
+        if(index/100000>0) {
             response.setStatus(400);
             throw new InvalidIndexFormatException();
         }
