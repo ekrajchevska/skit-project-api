@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="study_programs")
+@Table(name="programs")
 public class StudyProgram {
 
     @Id
@@ -14,10 +14,6 @@ public class StudyProgram {
 
     @Column(name="name")
     private String name;
-
-    @OneToMany()
-    @JoinColumn(name="fk_program")
-    List<Student> students;
 
     public StudyProgram(){}
 
