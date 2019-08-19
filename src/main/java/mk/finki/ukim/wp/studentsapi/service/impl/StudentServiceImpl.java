@@ -10,10 +10,10 @@ import mk.finki.ukim.wp.studentsapi.repository.StudyProgramRepository;
 import mk.finki.ukim.wp.studentsapi.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -59,6 +59,10 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public boolean addStudent(String index, String name, String lastName, String studyProgram) {
+
+        List<Character> indexChars = index.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
+        if(indexChars.size()!=6) return false;
+        if(indexChars.stream().anyMatch(Character::isAlphabetic)) return false;
 
         if(this.studentRepository.findById(index).isPresent()) throw new StudentNotFoundException();
         StudyProgram studyProgramOfNewStudent = this.studyProgramRepository.findByName(studyProgram);
