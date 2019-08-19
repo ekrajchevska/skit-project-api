@@ -11,16 +11,13 @@ public interface StudentService {
 
     List<StudentInput> getAllStudents();
 
-    Optional<Student> getStudentById(String id);
+    Optional<StudentInput> getStudentById(String id);
 
     void deleteStudentById(String id);
 
-    boolean addStudent(String index, String name, String lastName, Long studyProgram);
+    boolean addStudent(String index, String name, String lastName, String studyProgram);
 
-    void modifyStudent(Student modified);
+    boolean modifyStudent(String index, StudentInput modified);
 
     List<Student> findAllByStudyProgram(Long id);
-
-    StudyProgram findByName(String nameStudyProgram);
-
 }

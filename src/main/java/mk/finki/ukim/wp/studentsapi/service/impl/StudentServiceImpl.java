@@ -3,6 +3,8 @@ package mk.finki.ukim.wp.studentsapi.service.impl;
 import mk.finki.ukim.wp.studentsapi.model.Student;
 import mk.finki.ukim.wp.studentsapi.model.StudentInput;
 import mk.finki.ukim.wp.studentsapi.model.StudyProgram;
+import mk.finki.ukim.wp.studentsapi.model.exceptions.StudentNotFoundException;
+import mk.finki.ukim.wp.studentsapi.model.exceptions.StudyProgramNotFoundException;
 import mk.finki.ukim.wp.studentsapi.repository.StudentRepository;
 import mk.finki.ukim.wp.studentsapi.repository.StudyProgramRepository;
 import mk.finki.ukim.wp.studentsapi.service.StudentService;
@@ -17,7 +19,6 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
 
     private StudentRepository studentRepository;
-
     private StudyProgramRepository studyProgramRepository;
 
     @Autowired
@@ -42,46 +43,52 @@ public class StudentServiceImpl implements StudentService {
         return studentInputs;
     }
 
-    public Optional<Student> getStudentById(String id){
-        return this.studentRepository.findById(id);
+    public Optional<StudentInput> getStudentById(String id){
+        Optional<Student> student = this.studentRepository.findById(id);
+        if(student.isPresent()){
+            Optional<StudyProgram> studyProgram = this.studyProgramRepository.findById(student.get().getStudyProgram());
+            if(studyProgram.isPresent())
+                return Optional.of(new StudentInput(student.get().getIndex(),student.get().getName(),
+                        student.get().getLastName(), studyProgram.get().getName()));
+        }
+        return Optional.empty();
     }
 
     public void deleteStudentById(String id){
         this.studentRepository.deleteById(id);
     }
 
-    public boolean addStudent(String index, String name, String lastName, Long studyProgram) {
+    public boolean addStudent(String index, String name, String lastName, String studyProgram) {
 
-        if(this.studentRepository.findById(index).isPresent()) return false;
-        this.studentRepository.save(new Student(index,name,lastName,studyProgram));
+        if(this.studentRepository.findById(index).isPresent()) throw new StudentNotFoundException();
+        StudyProgram studyProgramOfNewStudent = this.studyProgramRepository.findByName(studyProgram);
+        if(studyProgramOfNewStudent==null) throw new StudyProgramNotFoundException();
+        this.studentRepository.save(new Student(index,name,lastName,studyProgramOfNewStudent.getId()));
         return true;
 
     }
 
-    public void modifyStudent(Student modified){
-        Optional<Student> s = this.studentRepository.findById(modified.getIndex());
+    public boolean modifyStudent(String index, StudentInput modified){
+        Optional<Student> s = this.studentRepository.findById(index);
         if(s.isPresent()){
             Student student = s.get();
-            if(modified.getName()==null)
-                modified.setName(student.getName());
-            if(modified.getLastName()==null)
-                modified.setLastName(student.getLastName());
-            if(modified.getStudyProgram()==null)
-                modified.setStudyProgram(student.getStudyProgram());
+            if(modified.name!=null)
+                student.setName(modified.name);
+            if(modified.lastName!=null)
+                student.setLastName(modified.lastName);
+            if(modified.studyProgram!=null)
+                student.setStudyProgram(this.studyProgramRepository.findByName(modified.studyProgram).getId());
 
-            this.studentRepository.save(modified);
+            this.studentRepository.save(student);
+            return true;
         }
+        return false;
     }
 
     public List<Student> findAllByStudyProgram(Long id){
-        return this.studentRepository.findByStudyProgram(id);
+      if(this.studentRepository.findAllByStudyProgram(id).isPresent())
+          return this.studentRepository.findAllByStudyProgram(id).get();
+      return null;
     }
-
-    public StudyProgram findByName(String nameStudyProgram){
-        return this.studyProgramRepository.findByName(nameStudyProgram);
-    }
-
-
-
 
 }

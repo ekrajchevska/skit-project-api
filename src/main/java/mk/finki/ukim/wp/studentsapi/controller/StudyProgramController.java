@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,22 +27,16 @@ public class StudyProgramController {
 
     @GetMapping("/study_programs/{id}")
     public ResponseEntity<StudyProgram> getStudyProgram(@PathVariable Long id){
-        StudyProgram studyProgram = this.studyProgramServiceImpl.getStudyProgramById(id);
-        if(studyProgram == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(studyProgram,HttpStatus.OK);
+        return this.studyProgramServiceImpl.getStudyProgramById(id)
+                .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/study_programs/{id}")
     public ResponseEntity<StudyProgram> modifyStudyProgram(@PathVariable Long id,
                                                            @RequestBody StudyProgram studyProgram){
-        StudyProgram sp = this.studyProgramServiceImpl.getStudyProgramById(id);
-        if(sp==null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if(studyProgram.getName()!=null)
-            sp.setName(studyProgram.getName());
-
-        this.studyProgramServiceImpl.updateStudyProgram(sp);
-        return new ResponseEntity<>(sp,HttpStatus.OK);
+        if(this.studyProgramServiceImpl.updateStudyProgram(id,studyProgram))
+            return ResponseEntity.ok().build();
+        return ResponseEntity.notFound().build();
     }
 
     // 7)
@@ -53,15 +48,25 @@ public class StudyProgramController {
 
     // 8)
     @PostMapping("/study_programs")
-    public void addStudyProgram(@RequestBody StudyProgram studyProgram){
-        this.studyProgramServiceImpl.addStudyProgram(studyProgram.getName());
+    public void addStudyProgram(HttpServletResponse response, @RequestBody StudyProgram studyProgram){
+        if(this.studyProgramServiceImpl.addStudyProgram(studyProgram.getName()))
+            response.setStatus(200);
+        else {
+            response.setStatus(403);
+            response.setHeader("statusText","Study program with given name already exists");
+        }
     }
 
     // 9)
     @DeleteMapping("/study_programs/{id}")
-    public void deleteStudyProgram(@PathVariable Long id){
-        this.studyProgramServiceImpl.deleteStudyProgram(id);
+    public void deleteStudyProgram(HttpServletResponse response, @PathVariable Long id){
+
+        if(this.studyProgramServiceImpl.deleteStudyProgram(id))
+            response.setStatus(200);
+        else {
+            response.setStatus(403);
+            response.setHeader("statusText","Deleting program with enrolled students is forbidden");
+        }
+
     }
-
-
 }

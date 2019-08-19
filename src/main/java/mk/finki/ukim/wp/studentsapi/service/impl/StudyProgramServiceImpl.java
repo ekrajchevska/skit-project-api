@@ -1,6 +1,8 @@
 package mk.finki.ukim.wp.studentsapi.service.impl;
 
+import mk.finki.ukim.wp.studentsapi.model.Student;
 import mk.finki.ukim.wp.studentsapi.model.StudyProgram;
+import mk.finki.ukim.wp.studentsapi.repository.StudentRepository;
 import mk.finki.ukim.wp.studentsapi.repository.StudyProgramRepository;
 import mk.finki.ukim.wp.studentsapi.service.StudyProgramService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,37 +15,51 @@ import java.util.Optional;
 public class StudyProgramServiceImpl implements StudyProgramService {
 
     private StudyProgramRepository studyProgramRepository;
+    private StudentRepository studentRepository;
 
     public StudyProgramServiceImpl(){}
 
     @Autowired
-    public StudyProgramServiceImpl(StudyProgramRepository studyProgramRepository) {
+    public StudyProgramServiceImpl(StudyProgramRepository studyProgramRepository,
+                                   StudentRepository studentRepository) {
         this.studyProgramRepository = studyProgramRepository;
+        this.studentRepository = studentRepository;
     }
 
-    public StudyProgram getStudyProgramById(Long id){
-        Optional<StudyProgram> sp = this.studyProgramRepository.findById(id);
-        if(sp.isPresent())
-            return sp.get();
-        return null;
+    public Optional<StudyProgram> getStudyProgramById(Long id){
+        return this.studyProgramRepository.findById(id);
     }
 
     public List<StudyProgram> getAllStudyPrograms(){
         return this.studyProgramRepository.findAll();
     }
 
-    public void addStudyProgram(String name){
+    public boolean addStudyProgram(String name){
         StudyProgram exists = this.studyProgramRepository.findByName(name);
-        if(exists!=null) return;
+        if(exists!=null) return false;
         this.studyProgramRepository.save(new StudyProgram(name));
+        return true;
     }
 
-    public void deleteStudyProgram(Long id){
+    public boolean deleteStudyProgram(Long id){
+        Optional<List<Student>> studentsOfSp = this.studentRepository.findAllByStudyProgram(id);
+        if(studentsOfSp.isPresent())
+            return false;
+
         this.studyProgramRepository.deleteById(id);
+        return true;
     }
 
-    public void updateStudyProgram(StudyProgram studyProgram){
-       this.studyProgramRepository.save(studyProgram);
+    public boolean updateStudyProgram(Long id,StudyProgram modified){
+        Optional<StudyProgram> sp = this.studyProgramRepository.findById(id);
+        if(!sp.isPresent()) return false;
+        StudyProgram newStudyProgram = sp.get();
+        if(modified.getName()!=null && this.studyProgramRepository.findByName(modified.getName())==null)
+            newStudyProgram.setName(modified.getName());
+        else return false;
+
+        this.studyProgramRepository.save(newStudyProgram);
+        return true;
     }
 
 

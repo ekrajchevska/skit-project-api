@@ -8,10 +8,10 @@ public interface StudyProgramService {
 
     List<StudyProgram> getAllStudyPrograms();
 
-    void addStudyProgram(String name);
+    boolean addStudyProgram(String name);
 
-    void deleteStudyProgram(Long id);
+    boolean deleteStudyProgram(Long id);
 
-    void updateStudyProgram(StudyProgram studyProgram);
+    boolean updateStudyProgram(Long id, StudyProgram studyProgram);
 
 }
