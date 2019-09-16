@@ -25,21 +25,24 @@ public class StudyProgramController {
         this.studyProgramServiceImpl = studyProgramServiceImpl;
     }
 
+    // TESTED
     @GetMapping("/study_programs/{id}")
     public ResponseEntity<StudyProgram> getStudyProgram(@PathVariable Long id){
         return this.studyProgramServiceImpl.getStudyProgramById(id)
                 .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // TESTED
     @PutMapping("/study_programs/{id}")
     public ResponseEntity<StudyProgram> modifyStudyProgram(@PathVariable Long id,
-                                                           @RequestBody StudyProgram studyProgram){
+                                                           @RequestBody String studyProgram){
         if(this.studyProgramServiceImpl.updateStudyProgram(id,studyProgram))
             return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();
     }
 
     // 7)
+    // TESTED
     @GetMapping("/study_programs")
     public ResponseEntity<List<StudyProgram>> getStudyPrograms(){
         List<StudyProgram> studyPrograms = this.studyProgramServiceImpl.getAllStudyPrograms();
@@ -47,6 +50,7 @@ public class StudyProgramController {
     }
 
     // 8)
+    // TESTED
     @PostMapping("/study_programs")
     public void addStudyProgram(HttpServletResponse response, @RequestBody StudyProgram studyProgram){
         if(this.studyProgramServiceImpl.addStudyProgram(studyProgram.getName()))
@@ -58,6 +62,7 @@ public class StudyProgramController {
     }
 
     // 9)
+    // TESTED
     @DeleteMapping("/study_programs/{id}")
     public void deleteStudyProgram(HttpServletResponse response, @PathVariable Long id){
 

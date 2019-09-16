@@ -30,4 +30,5 @@ dependencies {
 	//runtimeOnly('org.postgresql:postgresql')
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
     runtime("com.h2database:h2:1.4.196")
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.1.6.RELEASE'
 }

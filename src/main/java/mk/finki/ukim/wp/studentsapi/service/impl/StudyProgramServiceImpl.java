@@ -26,14 +26,17 @@ public class StudyProgramServiceImpl implements StudyProgramService {
         this.studentRepository = studentRepository;
     }
 
+    // TESTED
     public Optional<StudyProgram> getStudyProgramById(Long id){
         return this.studyProgramRepository.findById(id);
     }
 
+    // TESTED
     public List<StudyProgram> getAllStudyPrograms(){
         return this.studyProgramRepository.findAll();
     }
 
+    // TESTED
     public boolean addStudyProgram(String name){
         StudyProgram exists = this.studyProgramRepository.findByName(name);
         if(exists!=null) return false;
@@ -41,23 +44,29 @@ public class StudyProgramServiceImpl implements StudyProgramService {
         return true;
     }
 
+    // TESTED
     public boolean deleteStudyProgram(Long id){
         Optional<List<Student>> studentsOfSp = this.studentRepository.findAllByStudyProgram(id);
-        if(studentsOfSp.isPresent())
+        if(!studentsOfSp.isPresent())
+            return false;
+
+        if(studentsOfSp.get().size() == 0)
             return false;
 
         this.studyProgramRepository.deleteById(id);
         return true;
     }
 
-    public boolean updateStudyProgram(Long id,StudyProgram modified){
+    // TESTED
+    public boolean updateStudyProgram(Long id,String modified){
         Optional<StudyProgram> sp = this.studyProgramRepository.findById(id);
         if(!sp.isPresent()) return false;
-        StudyProgram newStudyProgram = sp.get();
-        if(modified.getName()!=null && this.studyProgramRepository.findByName(modified.getName())==null)
-            newStudyProgram.setName(modified.getName());
-        else return false;
 
+        StudyProgram newStudyProgram = sp.get();
+        if(modified == null || this.studyProgramRepository.findByName(modified) != null)
+            return false;
+
+        newStudyProgram.setName(modified);
         this.studyProgramRepository.save(newStudyProgram);
         return true;
     }

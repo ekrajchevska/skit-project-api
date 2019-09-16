@@ -12,6 +12,6 @@ public interface StudyProgramService {
 
     boolean deleteStudyProgram(Long id);
 
-    boolean updateStudyProgram(Long id, StudyProgram studyProgram);
+    boolean updateStudyProgram(Long id, String studyProgram);
 
 }
