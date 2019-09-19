@@ -142,7 +142,7 @@ public class StudyProgramControllerTest {
     @Test
     public void whenModifyStudyProgramReturnStatusOkIfIdExists() throws Exception {
 
-        given(service.updateStudyProgram(1L, "KNI")).willReturn(true);
+        given(service.updateStudyProgram(1L, new StudyProgram("KNI"))).willReturn(true);
 
         mvc.perform(put("/api/study_programs/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +153,7 @@ public class StudyProgramControllerTest {
     @Test
     public void whenModifyStudyProgramReturnStatusNotFoundIfNoId() throws Exception {
 
-        given(service.updateStudyProgram(7L, "KNIA")).willReturn(false);
+        given(service.updateStudyProgram(7L, new StudyProgram("KNIA"))).willReturn(false);
 
         mvc.perform(put("/api/study_programs/{id}", 7L)
                 .contentType(MediaType.APPLICATION_JSON)

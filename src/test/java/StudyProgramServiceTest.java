@@ -155,7 +155,7 @@ public class StudyProgramServiceTest {
 
         Long id = 1L;
         String name = "PIT";
-        boolean updated = studyProgramService.updateStudyProgram(id, name);
+        boolean updated = studyProgramService.updateStudyProgram(id, new StudyProgram(name));
 
         assertThat(updated).isEqualTo(true);
     }
@@ -165,7 +165,7 @@ public class StudyProgramServiceTest {
 
         Long id = 4L;
         String name = "PIT";
-        boolean updated = studyProgramService.updateStudyProgram(id, name);
+        boolean updated = studyProgramService.updateStudyProgram(id, new StudyProgram(name));
 
         assertThat(updated).isEqualTo(false);
     }
@@ -175,7 +175,7 @@ public class StudyProgramServiceTest {
 
         Long id = 1L;
         String name = "KNIA";
-        boolean updated = studyProgramService.updateStudyProgram(id, name);
+        boolean updated = studyProgramService.updateStudyProgram(id, new StudyProgram(name));
 
         assertThat(updated).isEqualTo(false);
     }
