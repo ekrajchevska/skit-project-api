@@ -34,8 +34,7 @@ public class StudyProgramController {
 
     // TESTED
     @PutMapping("/study_programs/{id}")
-    public ResponseEntity<StudyProgram> modifyStudyProgram(@PathVariable Long id,
-                                                           @RequestBody String studyProgram){
+    public ResponseEntity<StudyProgram> modifyStudyProgram(@PathVariable Long id,@RequestBody StudyProgram studyProgram){
         if(this.studyProgramServiceImpl.updateStudyProgram(id,studyProgram))
             return ResponseEntity.ok().build();
         return ResponseEntity.notFound().build();

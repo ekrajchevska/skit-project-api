@@ -47,10 +47,7 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     // TESTED
     public boolean deleteStudyProgram(Long id){
         Optional<List<Student>> studentsOfSp = this.studentRepository.findAllByStudyProgram(id);
-        if(!studentsOfSp.isPresent())
-            return false;
-
-        if(studentsOfSp.get().size() == 0)
+        if(studentsOfSp.isPresent())
             return false;
 
         this.studyProgramRepository.deleteById(id);
@@ -58,15 +55,15 @@ public class StudyProgramServiceImpl implements StudyProgramService {
     }
 
     // TESTED
-    public boolean updateStudyProgram(Long id,String modified){
+    public boolean updateStudyProgram(Long id,StudyProgram modified){
         Optional<StudyProgram> sp = this.studyProgramRepository.findById(id);
         if(!sp.isPresent()) return false;
 
         StudyProgram newStudyProgram = sp.get();
-        if(modified == null || this.studyProgramRepository.findByName(modified) != null)
-            return false;
+        if(modified.getName()!=null && this.studyProgramRepository.findByName(modified.getName())==null)
+            newStudyProgram.setName(modified.getName());
+        else return false;
 
-        newStudyProgram.setName(modified);
         this.studyProgramRepository.save(newStudyProgram);
         return true;
     }
