@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 public class StudyProgramServiceTest {
 
     @TestConfiguration
-    static class MovieServiceTestContextConfiguration{
+    static class StudyProgramServiceTestContextConfiguration{
 
         @Bean
         public StudyProgramServiceImpl studyProgramService(){

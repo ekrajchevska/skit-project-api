@@ -21,12 +21,15 @@ public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
     private StudyProgramRepository studyProgramRepository;
 
+    public StudentServiceImpl(){}
+
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository, StudyProgramRepository studyProgramRepository){
         this.studentRepository = studentRepository;
         this.studyProgramRepository = studyProgramRepository;
     }
 
+    // TESTED
     public List<StudentInput> getAllStudents(){
         List<Student> students = studentRepository.findAll();
         List<StudentInput> studentInputs = new ArrayList<>(students.size());
@@ -43,6 +46,7 @@ public class StudentServiceImpl implements StudentService {
         return studentInputs;
     }
 
+    // TESTED
     public Optional<StudentInput> getStudentById(String id){
         Optional<Student> student = this.studentRepository.findById(id);
         if(student.isPresent()){
@@ -54,10 +58,12 @@ public class StudentServiceImpl implements StudentService {
         return Optional.empty();
     }
 
+    // NOT TESTED
     public void deleteStudentById(String id){
         this.studentRepository.deleteById(id);
     }
 
+    // TESTED
     public boolean addStudent(String index, String name, String lastName, String studyProgram) {
 
         List<Character> indexChars = index.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
@@ -72,6 +78,7 @@ public class StudentServiceImpl implements StudentService {
 
     }
 
+    // TESTED
     public boolean modifyStudent(String index, StudentInput modified){
         Optional<Student> s = this.studentRepository.findById(index);
         if(s.isPresent()){
@@ -89,6 +96,7 @@ public class StudentServiceImpl implements StudentService {
         return false;
     }
 
+    // TESTED
     public List<Student> findAllByStudyProgram(Long id){
       if(this.studentRepository.findAllByStudyProgram(id).isPresent())
           return this.studentRepository.findAllByStudyProgram(id).get();

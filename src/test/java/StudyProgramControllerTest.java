@@ -146,7 +146,7 @@ public class StudyProgramControllerTest {
 
         mvc.perform(put("/api/study_programs/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("KNI"))
+                .content(objectMapper.writeValueAsString(new StudyProgram("KNI"))))
                 .andExpect(status().isOk());
     }
 

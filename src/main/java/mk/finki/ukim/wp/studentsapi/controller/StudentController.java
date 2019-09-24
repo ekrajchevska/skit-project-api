@@ -28,12 +28,14 @@ public class StudentController {
     public StudentController(StudentServiceImpl studentServiceImpl){this.studentServiceImpl = studentServiceImpl;}
 
     // 1)
+    // TESTED
     @GetMapping("/students")
     public ResponseEntity<List<StudentInput>> getAllStudents(){
         return new ResponseEntity<>(this.studentServiceImpl.getAllStudents(), HttpStatus.OK); //200
     }
 
     // 2)
+    // TESTED
     @GetMapping("/students/{index}")
     public ResponseEntity<StudentInput> getStudentByIndex(@PathVariable String index){
         return this.studentServiceImpl.getStudentById(index)
@@ -41,6 +43,7 @@ public class StudentController {
     }
 
     // 3)
+    // TESTED
     @GetMapping("/students/by_study_program/{id}")
     public ResponseEntity<List<Student>> getStudentsByStudyProgram(@PathVariable Long id){
         List<Student> students = this.studentServiceImpl.findAllByStudyProgram(id);
@@ -48,6 +51,7 @@ public class StudentController {
     }
 
     // 4)
+    // TESTED
     @PostMapping("/students")
     public ResponseEntity addStudent(HttpServletResponse response, @RequestBody StudentInput s) throws ParameterMissingException,
             StudentNotFoundException, StudyProgramNotFoundException{
@@ -64,6 +68,7 @@ public class StudentController {
     }
 
     // 5)
+    // TESTED
     @PutMapping("/students/{index}")
     public ResponseEntity<Student> modifyStudent(@PathVariable String index, @RequestBody StudentInput student){
         if(this.studentServiceImpl.modifyStudent(index, student))
@@ -72,6 +77,7 @@ public class StudentController {
     }
 
     // 6)
+    // TESTED
     @DeleteMapping("/students/{index}")
     public ResponseEntity<StudentInput> deleteStudentByIndex(@PathVariable String index){
 
